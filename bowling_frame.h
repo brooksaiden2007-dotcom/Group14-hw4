@@ -1,121 +1,46 @@
-#include "bowling_frame.h"
-#include <random>
+#ifndef BOWLING_FRAME_H
+#define BOWLING_FRAME_H
 
-std::random_device dev;
-std::mt19937 rng(dev());
 
-Bowling_Frame::Bowling_Frame(int fnum)
+class Bowling_Frame
 {
-    score1_ = 0;
-    score2_ = 0;
-    strike_ = false;
-    spare_ = false;
-    roll_one_ = false;
-    roll_two_ = false;
-    total_score_ = 0;
-    frame_num_ = fnum;
-    frame_score_ = 0;
+	private:
+		int score1_;
+		int score2_;
+		bool strike_;
+		bool spare_;
+		bool roll_one_;
+		bool roll_two_;
 
-    next_frame_ = nullptr;
-    prev_frame_ = nullptr;
-}
+		int total_score_;
+		int frame_num_;
+		int frame_score_;
 
-Bowling_Frame::~Bowling_Frame()
-{
-}
+		Bowling_Frame * next_frame_;
+		Bowling_Frame * prev_frame_;
 
-Bowling_Frame * Bowling_Frame::next_frame()
-{
-    return next_frame_;
-}
 
-void Bowling_Frame::next_frame(Bowling_Frame * new_frame)
-{
-    next_frame_ = new_frame;
-}
+	public:
+		Bowling_Frame(int fnum);
+		~Bowling_Frame();
 
-Bowling_Frame * Bowling_Frame::prev_frame()
-{
-    return prev_frame_;
-}
+		Bowling_Frame* next_frame(); 	
+		void next_frame(Bowling_Frame * new_frame);
 
-void Bowling_Frame::prev_frame(Bowling_Frame * new_frame)
-{
-    prev_frame_ = new_frame;
-}
+		Bowling_Frame* prev_frame(); 	
+		void prev_frame(Bowling_Frame * new_frame);
 
-int Bowling_Frame::score1()
-{
-    return score1_;
-}
+		int score1();
+		void score1(int score);
+		int score2();
+		void score2(int score);
+		bool strike();
+		void strike(bool value);
+		bool spare();
+		void spare(bool value);
+		int frame_num();
+		int frame_score();
+		void update_scores();
+};
 
-void Bowling_Frame::score1(int score)
-{
-    score1_ = score;
-}
-
-int Bowling_Frame::score2()
-{
-    return score2_;
-}
-
-void Bowling_Frame::score2(int score)
-{
-    score2_ = score;
-}
-
-bool Bowling_Frame::strike()
-{
-    return strike_;
-}
-
-void Bowling_Frame::strike(bool value)
-{
-    strike_ = value;
-}
-
-bool Bowling_Frame::spare()
-{
-    return spare_;
-}
-
-void Bowling_Frame::spare(bool value)
-{
-    spare_ = value;
-}
-
-int Bowling_Frame::frame_num()
-{
-    return frame_num_;
-}
-
-int Bowling_Frame::frame_score()
-{
-    return frame_score_;
-}
-
-void Bowling_Frame::update_scores()
-{
-    if (!roll_one_)
-    {
-        std::uniform_int_distribution<int> distribution(0, 10);
-
-        score1_ = distribution(rng);
-        roll_one_ = true;
-        strike_ = (score1_ == 10);
-    }
-    else if (!strike_ && !roll_two_)
-    {
-        std::uniform_int_distribution<int> distribution(0, 10 - score1_);
-
-        score2_ = distribution(rng);
-        roll_two_ = true;
-        spare_ = (score1_ + score2_ == 10);
-    }
-    else if (next_frame_ != nullptr)
-    {
-        next_frame_->update_scores();
-    }
-
-    frame_score_ = score1_ + score2_;
-}
+#endif
